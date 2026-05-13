@@ -4,7 +4,7 @@
 
 # MoAir
 
-> macOS menubar utility: AirPods head tracking → spatial-audio OSC, plus professional, dB-accurate calibration. Tim just wants to use his headphones.
+> Tim just wants to use his headphones! macOS menubar utility: AirPods head tracking → spatial-audio OSC, plus professional, dB-accurate calibration.
 
 <p align="center">
   <img src="design/screencap.png" width="360" alt="MoAir menubar panel">
@@ -13,8 +13,9 @@
 ## Features
 
 - Head tracking → OSC for **DAR**, **Apple ASAF**, **Nx**, **Mach1**, **Virtuoso** (or custom).
-- Live volume in calibrated dB — precise over USB-C, AVRCP-snapped over Bluetooth.
-- Connection, Codec, latency, battery, RSSI at a glance.
+- Live volume in calibrated dB.
+- Connection, Codec, latency, battery, latency, tracking stats at a glance.
+- Fine tune head tracking with dead spots and sensitivity.
 
 ## Install
 
