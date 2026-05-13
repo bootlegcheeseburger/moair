@@ -4,7 +4,7 @@
 
 # MoAir
 
-> macOS menubar utility: AirPods head tracking → spatial-audio OSC.
+> macOS menubar utility: AirPods head tracking → spatial-audio OSC, plus professional, dB-accurate calibration. Tim just wants to use his headphones.
 
 <p align="center">
   <img src="design/screencap.png" width="360" alt="MoAir menubar panel">
