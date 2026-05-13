@@ -1,0 +1,58 @@
+MoAir - End User License Agreement
+
+By clicking "Agree", you accept these terms.
+
+
+1. License
+
+MoAir is distributed under the MIT License (full text in the LICENSE
+file of the source repository). You may use, copy, modify, and
+redistribute the software subject to that license.
+
+
+2. No warranty
+
+The software is provided "AS IS", without warranty of any kind,
+express or implied, including but not limited to the warranties of
+merchantability, fitness for a particular purpose, and non-infringement.
+
+
+3. Limitation of liability
+
+To the maximum extent permitted by law, in no event shall the author
+be liable for any claim, damages, or other liability - including
+direct, indirect, incidental, special, consequential, or exemplary
+damages, lost profits, lost data, business interruption, hearing
+damage, or damage to audio equipment - arising from or in connection
+with the software or its use.
+
+
+4. Pro-audio use
+
+MoAir reads head-tracking data from connected headphones and sends
+OSC packets to audio applications you configure. You are responsible
+for monitoring playback levels, protecting your hearing, and avoiding
+feedback or other conditions that could damage you or your equipment.
+Do not use the software while operating a vehicle or machinery.
+
+
+5. Third-party components
+
+MoAir depends on open-source libraries pinned in Package.resolved.
+Each is licensed under its own terms.
+
+
+6. Privacy
+
+MoAir does not collect, transmit, or store personal data. It does not
+phone home, log to a remote service, or include analytics or auto-
+update. Preferences are stored locally on your machine.
+
+
+7. Termination
+
+This license terminates automatically if you fail to comply with
+its terms.
+
+
+If you do not agree to these terms, click "Quit" and the app will exit.

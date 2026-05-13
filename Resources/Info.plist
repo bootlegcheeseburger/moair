@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>en</string>
+	<key>CFBundleDisplayName</key>
+	<string>MoAir</string>
+	<key>CFBundleExecutable</key>
+	<string>MoAir</string>
+	<key>CFBundleIconFile</key>
+	<string>MoAir</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.bootlegcheeseburger.moair</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>MoAir</string>
+	<key>CFBundlePackageType</key>
+	<string>APPL</string>
+	<key>CFBundleShortVersionString</key>
+	<string>0.8.0</string>
+	<key>CFBundleVersion</key>
+	<string>8</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>14.0</string>
+	<key>LSUIElement</key>
+	<true/>
+	<key>NSBluetoothAlwaysUsageDescription</key>
+	<string>MoAir reads battery, signal, and connection info from your AirPods or Beats Fit Pro via Bluetooth Low Energy.</string>
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>MoAir reads battery, signal, and connection info from your AirPods or Beats Fit Pro via Bluetooth Low Energy.</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>© 2026 Bootleg Cheeseburger, LLC</string>
+	<key>NSMotionUsageDescription</key>
+	<string>MoAir reads head orientation from your AirPods or Beats Fit Pro to broadcast it as OSC for spatial audio applications.</string>
+</dict>
+</plist>

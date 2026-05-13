@@ -1,0 +1,52 @@
+# --- Swift / SwiftPM ---
+.build/
+.swiftpm/
+build/
+DerivedData/
+*.xcodeproj
+*.xcworkspace
+# Note: Package.resolved IS committed (executable repo, pinned deps for reproducible builds).
+
+# --- macOS junk ---
+.DS_Store
+**/.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# --- Build/release outputs ---
+MoAir.app/
+Resources/MoAir.iconset/
+dist/
+*.dmg
+
+# --- Signing / notarization (NEVER commit) ---
+*.p12
+*.cer
+*.pem
+*.key
+*.mobileprovision
+*.provisionprofile
+ExportOptions.plist
+
+# --- Secrets ---
+.env
+.env.*
+!.env.example
+secrets.*
+credentials.*
+*.secret
+*_secret
+AuthKey_*.p8
+
+# --- Editors ---
+.vscode/
+.idea/
+*.swp
+*~
+
+# --- Local dev environment (personal, do not ship) ---
+.moair-theme.zsh
+.claude/
+CLAUDE.local.md
+TODO.md
