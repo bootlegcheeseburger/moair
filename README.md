@@ -14,7 +14,7 @@
 
 - Head tracking → OSC for **DAR**, **Apple ASAF**, **Nx**, **Mach1**, **Virtuoso** (or custom).
 - Live volume in calibrated dB.
-- Connection, Codec, latency, battery, latency, tracking stats at a glance.
+- Connection, Codec, latency, battery, tracking stats at a glance.
 - Fine tune head tracking with dead spots and sensitivity.
 
 ## Install
