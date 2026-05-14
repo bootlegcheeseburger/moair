@@ -95,11 +95,12 @@ private struct MenuBarLabel: View {
     /// mistake pixel count for point count, causing fuzzy upscale on
     /// retina menubars.
     private var menuImage: NSImage {
-        // While head tracking is actively streaming we use the moai
-        // sprite that follows the user's head pose. All other states
-        // (ready-but-idle, BT-disabled-for-tracking, disconnected, etc.)
-        // fall through to the static three-state glyph set.
-        if coord.headTracker.state == .streaming && coord.headTracker.totalSamples > 0 {
+        // Use the live moai sprite only while motion samples are still
+        // arriving. `hasFreshSamples` flips false within ~0.5 s of the
+        // stream going silent (cans pulled off head) — without that
+        // gate, CoreMotion's didDisconnect lag leaves the sprite frozen
+        // at the last orientation for several seconds.
+        if coord.headTracker.state == .streaming && coord.headTracker.hasFreshSamples {
             let s = coord.headTracker.displayedStable
             return MoaiSprite.image(yawDeg: s.yawDegrees, pitchDeg: s.pitchDegrees)
         }

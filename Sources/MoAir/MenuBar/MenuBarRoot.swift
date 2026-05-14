@@ -13,33 +13,43 @@ struct MenuBarRoot: View {
                 SettingsView(settings: coord.settings)
                 Divider()
             } else {
-                switch coord.connectionStatus {
-                case .ready:
-                    VolumePanel()
-                    Divider()
-                    HeadTrackingPanel()
-                    Divider()
-                    ConnectionPanel()
-                    Divider()
-                case .btDisabledForTracking:
-                    // Volume + Connection still work; HT section is
-                    // replaced with an inline coaching block so the
-                    // toggle isn't confusingly "there but broken".
-                    VolumePanel()
-                    Divider()
-                    InlineHTGatedView(status: coord.connectionStatus)
-                    Divider()
-                    ConnectionPanel()
-                    Divider()
-                case .noDevice, .airpodsAvailableNotSelected, .airpodsOffHead, .airpodsDisconnected, .motionUnsupported, .motionDenied:
-                    EmptyStateView(status: coord.connectionStatus)
-                    Divider()
-                }
+                mainContent
             }
             BannerFooterRow(showSettings: $showSettings)
         }
         .padding(14)
         .frame(width: 360)
+        // Closing the popover should reset to the main view — when the
+        // user pops it open again they expect the dashboard, not the
+        // last-visited Options page.
+        .onAppear { showSettings = false }
+    }
+
+    @ViewBuilder
+    private var mainContent: some View {
+        switch coord.connectionStatus {
+        case .ready:
+            VolumePanel()
+            Divider()
+            HeadTrackingPanel()
+            Divider()
+            ConnectionPanel()
+            Divider()
+        case .btDisabledForTracking:
+            // Volume + Connection still work; HT section is replaced
+            // with an inline coaching block so the toggle isn't
+            // confusingly "there but broken".
+            VolumePanel()
+            Divider()
+            InlineHTGatedView(status: coord.connectionStatus)
+            Divider()
+            ConnectionPanel()
+            Divider()
+        case .noDevice, .airpodsAvailableNotSelected, .airpodsOffHead,
+             .airpodsDisconnected, .motionUnsupported, .motionDenied:
+            EmptyStateView(status: coord.connectionStatus)
+            Divider()
+        }
     }
 }
 

@@ -24,6 +24,12 @@ final class HeadTracker: NSObject, ObservableObject {
     @Published private(set) var effectiveHz: Double = 0
     @Published private(set) var lastSampleAge: TimeInterval = 0
     @Published private(set) var totalSamples: UInt64 = 0
+    /// True when motion samples have arrived recently (within ~0.5 s).
+    /// Goes false when CoreMotion stops emitting (e.g. cans pulled off
+    /// head) before the formal `didDisconnect` delegate callback fires,
+    /// which can lag by several seconds. The menubar uses this to fall
+    /// back from the live moai sprite to the static glyph immediately.
+    @Published private(set) var hasFreshSamples: Bool = false
     @Published private(set) var lastError: String?
 
     /// Per-axis post-processing applied between the calibrated orientation
@@ -72,6 +78,13 @@ final class HeadTracker: NSObject, ObservableObject {
     private var fakeTimer: Timer?
     private var fakeStartTime: TimeInterval = 0
     private var diagnosticsTimer: Timer?
+
+    /// Wall-clock time of the most recent ingest, used by the freshness
+    /// timer to detect "motion stream has gone silent" without waiting
+    /// for CoreMotion's didDisconnect.
+    private var lastSampleAtAppTime: TimeInterval = 0
+    private var freshnessTimer: Timer?
+    private static let freshnessThreshold: TimeInterval = 0.5
 
     var onSample: ((HeadOrientation) -> Void)?
 
@@ -157,6 +170,9 @@ final class HeadTracker: NSObject, ObservableObject {
         print("[MoAir][HeadTracker] stop() state=\(state) totalSamples=\(totalSamples)")
         diagnosticsTimer?.invalidate()
         diagnosticsTimer = nil
+        freshnessTimer?.invalidate()
+        freshnessTimer = nil
+        hasFreshSamples = false
         if FakeMode.enabled {
             fakeTimer?.invalidate()
             fakeTimer = nil
@@ -243,10 +259,32 @@ final class HeadTracker: NSObject, ObservableObject {
             }
         }
         lastSampleAge = Date().timeIntervalSince1970 - sample.receivedAt
+        lastSampleAtAppTime = Date().timeIntervalSince1970
+        if !hasFreshSamples { hasFreshSamples = true }
         totalSamples &+= 1
         if state != .streaming {
             print("[MoAir][HeadTracker] first sample received, -> .streaming")
             state = .streaming
+        }
+        ensureFreshnessTimer()
+    }
+
+    /// Lazy poll that flips `hasFreshSamples` to false when no sample
+    /// has arrived in `freshnessThreshold` seconds. Started on the first
+    /// ingest after each start() and cancelled when freshness drops
+    /// (re-armed on the next ingest).
+    private func ensureFreshnessTimer() {
+        guard freshnessTimer == nil else { return }
+        freshnessTimer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self else { return }
+                let elapsed = Date().timeIntervalSince1970 - self.lastSampleAtAppTime
+                if elapsed > Self.freshnessThreshold {
+                    if self.hasFreshSamples { self.hasFreshSamples = false }
+                    self.freshnessTimer?.invalidate()
+                    self.freshnessTimer = nil
+                }
+            }
         }
     }
 

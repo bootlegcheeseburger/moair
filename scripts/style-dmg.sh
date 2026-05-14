@@ -21,8 +21,8 @@ rw_dmg="$3"
 device=$(hdiutil attach -readwrite -noverify -noautoopen "$rw_dmg" \
   | awk '/^\/dev\// { print $1; exit }')
 
-# Always detach, even if AppleScript bombs out — otherwise the next
-# `just build-release` would fail trying to attach an already-mounted
+# Always detach, even if AppleScript bombs out -- otherwise the next
+# `just release` would fail trying to attach an already-mounted
 # image, and the user would have to eject by hand.
 cleanup() {
     hdiutil detach "$device" -quiet -force >/dev/null 2>&1 || true

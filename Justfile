@@ -2,16 +2,17 @@
 
 set shell := ["bash", "-cu"]
 
-app_name         := "MoAir"
-bundle_id        := "com.bootlegcheeseburger.moair"
-arch             := `uname -m`
-debug_bin        := ".build/" + arch + "-apple-macosx/debug/MoAir"
-release_bin      := ".build/" + arch + "-apple-macosx/release/MoAir"
-app_dir          := ".build/" + app_name + ".app"
-installed_app    := "/Applications/" + app_name + ".app"
-plist            := "Resources/Info.plist"
-signing_identity := env_var_or_default("MOAIR_SIGN_IDENTITY", "Developer ID Application: Daniel Timmons (X2L9Q89VB9)")
-notary_profile   := env_var_or_default("MOAIR_NOTARY_PROFILE", "moair-notarize")
+# shared signing recipes + signing_identity / notary_profile vars
+import? '../../shared/apple-signing/notary.just'
+
+app_name      := "MoAir"
+bundle_id     := "com.bootlegcheeseburger.moair"
+arch          := `uname -m`
+debug_bin     := ".build/" + arch + "-apple-macosx/debug/MoAir"
+release_bin   := ".build/" + arch + "-apple-macosx/release/MoAir"
+app_dir       := ".build/" + app_name + ".app"
+installed_app := "/Applications/" + app_name + ".app"
+plist         := "Resources/Info.plist"
 
 # list recipes
 default:
@@ -189,14 +190,9 @@ udpdump port="7000":
 
 # --- release ---
 
-# one-time: store Apple ID + team + app-specific password in keychain
-[group: 'release']
-notary-setup:
-    xcrun notarytool store-credentials {{notary_profile}}
-
 # bundle -> styled DMG -> sign -> notarize -> staple -> dist/
 [group: 'release']
-build-release: bundle
+release: bundle
     @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
         dmg="dist/{{app_name}}-v$v.dmg" ; \
         rw_dmg="/tmp/{{app_name}}-rw-$$.dmg" ; \
