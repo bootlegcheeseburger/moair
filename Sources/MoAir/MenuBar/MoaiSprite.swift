@@ -37,7 +37,9 @@ enum MoaiSprite {
 
     private static func loadGrid() -> [[NSImage]] {
         let fallback = NSImage()
-        guard let sheet = Bundle.module.image(forResource: "moai-grid") else {
+        // MenubarResources avoids Bundle.module's fatalError on miss —
+        // see MenubarResources.swift.
+        guard let sheet = MenubarResources.image(named: "moai-grid") else {
             return Array(repeating: Array(repeating: fallback, count: cols), count: rows)
         }
         let cellW = sheet.size.width  / CGFloat(cols)

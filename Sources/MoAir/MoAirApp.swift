@@ -109,7 +109,9 @@ private struct MenuBarLabel: View {
 
     /// Three-state static glyph: connected+ready, connected-but-BT-off
     /// (still want the "connected" icon since headphones are there), or
-    /// disconnected/off.
+    /// disconnected/off. Loaded via MenubarResources so a missing
+    /// bundle yields an empty image instead of a `Bundle.module`
+    /// fatalError on launch (which crashed v0.8.0 on fresh installs).
     private var staticMenuImage: NSImage {
         let name: String
         switch coord.connectionStatus {
@@ -119,7 +121,7 @@ private struct MenuBarLabel: View {
              .airpodsAvailableNotSelected, .motionUnsupported, .motionDenied:
             name = "moair-menu-off"
         }
-        let img = Bundle.module.image(forResource: name) ?? NSImage()
+        let img = MenubarResources.image(named: name) ?? NSImage()
         img.isTemplate = true
         return img
     }

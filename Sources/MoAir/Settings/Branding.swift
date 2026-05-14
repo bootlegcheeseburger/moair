@@ -28,7 +28,7 @@ enum AppInfo {
 
     /// Bumped automatically by `just bump {major|minor|patch}`. Don't edit
     /// by hand — keep equal to `CFBundleShortVersionString` in `Resources/Info.plist`.
-    static let hardcodedVersion = "0.8.0"
+    static let hardcodedVersion = "0.8.1"
 }
 
 /// Safe loader for the branded icons used by the Options screen.
