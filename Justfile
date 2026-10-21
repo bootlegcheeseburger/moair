@@ -190,15 +190,15 @@ udpdump port="7000":
 
 # --- release ---
 
-# bundle -> styled DMG -> sign -> notarize -> staple -> dist/
+# bundle -> styled DMG -> sign -> notarize -> staple -> ~/Builds/moair/releases/v<version>/
 [group: 'release']
 release: bundle
     @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
-        dmg="dist/{{app_name}}-v$v.dmg" ; \
+        d=$("$HOME/Code/blc/scripts/builds.sh" release-dir moair "v$v") ; \
+        dmg="$d/{{app_name}}-v$v.dmg" ; \
         rw_dmg="/tmp/{{app_name}}-rw-$$.dmg" ; \
         staging=$(mktemp -d) ; \
-        mkdir -p dist ; \
-        rm -f "dist/{{app_name}}-v"*.dmg "$rw_dmg" ; \
+        rm -f "$d/{{app_name}}-v"*.dmg "$rw_dmg" ; \
         cp -R {{app_dir}} "$staging/" ; \
         ln -s /Applications "$staging/Applications" ; \
         echo "[1/5] creating writable image" ; \
