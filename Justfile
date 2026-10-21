@@ -3,6 +3,8 @@
 set shell := ["bash", "-cu"]
 
 # shared signing recipes + signing_identity / notary_profile vars
+import? '~/Code/blc/just/core.just'
+import? '~/Code/blc/just/swift.just'
 import? '~/Code/blc/just/macos.just'
 # shared versioning: version, bump, cut, notes, publish (config: blc.toml [release])
 import? '~/Code/blc/just/release.just'
@@ -15,10 +17,6 @@ release_bin   := ".build/" + arch + "-apple-macosx/release/MoAir"
 app_dir       := ".build/" + app_name + ".app"
 installed_app := "/Applications/" + app_name + ".app"
 plist         := "Resources/Info.plist"
-
-# list recipes
-default:
-    @just --list --unsorted
 
 # --- dev ---
 
@@ -36,11 +34,6 @@ run: build
 [group: 'dev']
 fake: build
     MOAIR_FAKE=1 {{debug_bin}}
-
-# unit tests
-[group: 'dev']
-test:
-    swift test
 
 # rm -rf .build
 [group: 'dev']
