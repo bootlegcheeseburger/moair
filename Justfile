@@ -231,17 +231,17 @@ downloads:
         echo "----" ; \
         echo "total: $total"
 
-# --- ver ---
+# --- release ---
 
 # print current version
-[group: 'ver']
+[group: 'release']
 version:
     @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
         b=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' {{plist}}) ; \
         echo "MoAir v$v ($b)"
 
 # bump CFBundleShortVersionString + CFBundleVersion (major|minor|patch)
-[group: 'ver']
+[group: 'release']
 bump LEVEL:
     @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
         b=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' {{plist}}) ; \
@@ -258,16 +258,14 @@ bump LEVEL:
         sed -i '' -E "s/static let hardcodedVersion = \".*\"/static let hardcodedVersion = \"$new\"/" Sources/MoAir/Settings/Branding.swift ; \
         echo "$v ($b) -> $new ($nb)"
 
-# --- git ---
-
 # push main + tags
-[group: 'git']
+[group: 'release']
 push:
     git push origin main
     git push --tags
 
 # bump LEVEL, commit plist + Branding, tag vX.Y.Z
-[group: 'git']
+[group: 'release']
 cut LEVEL: (bump LEVEL)
     @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
         git add {{plist}} Sources/MoAir/Settings/Branding.swift ; \
