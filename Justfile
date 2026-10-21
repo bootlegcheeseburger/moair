@@ -186,33 +186,14 @@ udpdump port="7000":
 
 # --- release ---
 
-# bundle -> styled DMG -> sign -> notarize -> staple -> ~/Builds/moair/releases/v<version>/
+# bundle (signed), then the shop's ship step (~/Code/blc/scripts/macos-package.sh) -> ~/Builds/moair/releases/v<version>/MoAir-<version>.dmg
 [group: 'release']
 release: bundle
-    @v=$(cat VERSION) ; \
+    @set -eu ; v=$(cat VERSION) ; \
         d=$("$HOME/Code/blc/scripts/builds.sh" release-dir moair "v$v") ; \
-        dmg="$d/{{app_name}}-v$v.dmg" ; \
-        rw_dmg="/tmp/{{app_name}}-rw-$$.dmg" ; \
-        staging=$(mktemp -d) ; \
-        rm -f "$d/{{app_name}}-v"*.dmg "$rw_dmg" ; \
-        cp -R {{app_dir}} "$staging/" ; \
-        ln -s /Applications "$staging/Applications" ; \
-        echo "[1/5] creating writable image" ; \
-        hdiutil create -volname "{{app_name}}" -srcfolder "$staging" -fs HFS+ -format UDRW -ov -quiet "$rw_dmg" ; \
-        rm -rf "$staging" ; \
-        echo "[2/5] styling window (256pt icons, side-by-side layout)" ; \
-        bash scripts/style-dmg.sh "{{app_name}}" "{{app_name}}" "$rw_dmg" ; \
-        echo "[3/5] compressing → $dmg" ; \
-        hdiutil convert "$rw_dmg" -format UDZO -imagekey zlib-level=9 -o "$dmg" -quiet ; \
-        rm -f "$rw_dmg" ; \
-        echo "[4/5] signing $dmg" ; \
-        codesign --force --timestamp --sign "{{signing_identity}}" "$dmg" ; \
-        echo "[5/5] notarizing (Apple is judging us)" ; \
-        xcrun notarytool submit "$dmg" --keychain-profile "{{notary_profile}}" --wait ; \
-        xcrun stapler staple "$dmg" ; \
-        spctl -a -t open --context context:primary-signature -v "$dmg" ; \
-        echo "" ; \
-        echo "ready: $dmg"
+        rm -f "$d/{{app_name}}-"*.dmg "$d/{{app_name}}-"*.dmg.sha256 ; \
+        layout=() ; [ -f packaging/dmg.DS_Store ] && layout=(--dmg-layout packaging/dmg.DS_Store) ; \
+        "$HOME/Code/blc/scripts/macos-package.sh" {{app_dir}} --presigned --dmg --sha256 --out "$d" ${layout[@]+"${layout[@]}"}
 
 # per-release asset download counts (needs `gh` CLI, public repo or auth)
 [group: 'release']
