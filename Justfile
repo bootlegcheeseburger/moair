@@ -3,7 +3,7 @@
 set shell := ["bash", "-cu"]
 
 # shared signing recipes + signing_identity / notary_profile vars
-import? '../../shared/apple-signing/notary.just'
+import? '~/Code/blc/just/macos.just'
 
 app_name      := "MoAir"
 bundle_id     := "com.bootlegcheeseburger.moair"
