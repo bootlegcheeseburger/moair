@@ -4,6 +4,8 @@ set shell := ["bash", "-cu"]
 
 # shared signing recipes + signing_identity / notary_profile vars
 import? '~/Code/blc/just/macos.just'
+# shared versioning: version, bump, cut, notes, publish (config: blc.toml [release])
+import? '~/Code/blc/just/release.just'
 
 app_name      := "MoAir"
 bundle_id     := "com.bootlegcheeseburger.moair"
@@ -104,6 +106,7 @@ bundle: icon
     @mkdir -p {{app_dir}}/Contents/MacOS {{app_dir}}/Contents/Resources
     @cp {{release_bin}} {{app_dir}}/Contents/MacOS/{{app_name}}
     @cp Resources/Info.plist {{app_dir}}/Contents/Info.plist
+    @python3 -I ~/Code/blc/scripts/release.py stamp {{app_dir}}/Contents/Info.plist >/dev/null
     @cp Resources/MoAir.entitlements {{app_dir}}/Contents/Resources/MoAir.entitlements
     @cp Resources/MoAir.icns {{app_dir}}/Contents/Resources/MoAir.icns
     @cp Sources/MoAir/Resources/blc.png {{app_dir}}/Contents/Resources/blc.png
@@ -193,7 +196,7 @@ udpdump port="7000":
 # bundle -> styled DMG -> sign -> notarize -> staple -> ~/Builds/moair/releases/v<version>/
 [group: 'release']
 release: bundle
-    @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
+    @v=$(cat VERSION) ; \
         d=$("$HOME/Code/blc/scripts/builds.sh" release-dir moair "v$v") ; \
         dmg="$d/{{app_name}}-v$v.dmg" ; \
         rw_dmg="/tmp/{{app_name}}-rw-$$.dmg" ; \
@@ -231,44 +234,8 @@ downloads:
         echo "----" ; \
         echo "total: $total"
 
-# --- release ---
-
-# print current version
-[group: 'release']
-version:
-    @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
-        b=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' {{plist}}) ; \
-        echo "MoAir v$v ($b)"
-
-# bump CFBundleShortVersionString + CFBundleVersion (major|minor|patch)
-[group: 'release']
-bump LEVEL:
-    @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
-        b=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' {{plist}}) ; \
-        IFS=. read -r major minor patch <<< "$v" ; \
-        case "{{LEVEL}}" in \
-            major) new="$((major+1)).0.0" ;; \
-            minor) new="$major.$((minor+1)).0" ;; \
-            patch) new="$major.$minor.$((patch+1))" ;; \
-            *) echo "usage: just bump {major|minor|patch}" >&2 ; exit 1 ;; \
-        esac ; \
-        nb=$((b+1)) ; \
-        /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString $new" {{plist}} ; \
-        /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $nb" {{plist}} ; \
-        sed -i '' -E "s/static let hardcodedVersion = \".*\"/static let hardcodedVersion = \"$new\"/" Sources/MoAir/Settings/Branding.swift ; \
-        echo "$v ($b) -> $new ($nb)"
-
 # push main + tags
 [group: 'release']
 push:
     git push origin main
     git push --tags
-
-# bump LEVEL, commit plist + Branding, tag vX.Y.Z
-[group: 'release']
-cut LEVEL: (bump LEVEL)
-    @v=$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' {{plist}}) ; \
-        git add {{plist}} Sources/MoAir/Settings/Branding.swift ; \
-        git commit -m "Bump version to v$v" ; \
-        git tag "v$v" ; \
-        echo "tagged v$v -- run \`just push\` to publish"

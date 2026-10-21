@@ -3,3 +3,11 @@
 
 [deps]
 tier = "shipped"
+
+[release]
+app = "moair"
+version = "VERSION"
+github = "bootlegcheeseburger/moair"
+assets = ["*.dmg", "*.dmg.sha256"]
+# The Swift fallback that spells the version when the bundle has none.
+sync = [ { file = "Sources/MoAir/Settings/Branding.swift", pattern = 'hardcodedVersion = "([^"]*)"' } ]
