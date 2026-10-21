@@ -186,14 +186,9 @@ udpdump port="7000":
 
 # --- release ---
 
-# bundle (signed), then the shop's ship step (~/Code/blc/scripts/macos-package.sh) -> ~/Builds/moair/releases/v<version>/MoAir-<version>.dmg
+# bundle (signed), then the shop's ship step (release-dmg, macos-package.sh) -> ~/Builds/moair/releases/v<version>/MoAir-<version>.dmg
 [group: 'release']
-release: bundle
-    @set -eu ; v=$(cat VERSION) ; \
-        d=$("$HOME/Code/blc/scripts/builds.sh" release-dir moair "v$v") ; \
-        rm -f "$d/{{app_name}}-"*.dmg "$d/{{app_name}}-"*.dmg.sha256 ; \
-        layout=() ; [ -f packaging/dmg.DS_Store ] && layout=(--dmg-layout packaging/dmg.DS_Store) ; \
-        "$HOME/Code/blc/scripts/macos-package.sh" {{app_dir}} --presigned --dmg --sha256 --out "$d" ${layout[@]+"${layout[@]}"}
+release: bundle (release-dmg app_dir "--presigned")
 
 # per-release asset download counts (needs `gh` CLI, public repo or auth)
 [group: 'release']
