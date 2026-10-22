@@ -20,7 +20,7 @@
       "label": "Report a Security Issue...",
       "to": "security@bootlegcheeseburger.com",
       "subject": "[{app} {version}] Security: a report",
-      "body": "Hello,\n\nI would like to report a security issue in {app}.\n\nWhat I found:\n\n\nHow to reproduce it:\n\n\nApp: {app}\nVersion: {version}\nBuild: {build}\nmacOS: {macos}\n"
+      "body": "Hello,\n\nI would like to report a security issue.\n\nWhat I found:\n\n\nHow to reproduce it:\n\n\nApp: {app}\nVersion: {version}\nBuild: {build}\nmacOS: {macos}\n"
     }
   ]
 }
