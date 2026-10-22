@@ -21,19 +21,19 @@ plist         := "Resources/Info.plist"
 
 # --- dev ---
 
-# debug compile (fake runs the bare binary)
+# debug compile (tool-fake runs the bare binary)
 [private]
 _compile:
     swift build
 
 # run with synthesised motion + fake device
-[group: 'dev']
-fake: _compile
+[group('tool')]
+tool-fake: _compile
     MOAIR_FAKE=1 {{debug_bin}}
 
 # rm -rf .build
-[group: 'dev']
-clean:
+[group('dev')]
+dev-clean:
     rm -rf .build
 
 # --- app ---
@@ -47,8 +47,8 @@ _stop:
     -pkill -f '{{dev_app}}' || true
 
 # regenerate MoAir.icns + menubar PNGs from design TIFFs (idempotent)
-[group: 'app']
-icon:
+[group('tool')]
+tool-icon:
     @if [ ! -f Resources/MoAir.icns ] || [ design/moair-icon.tiff -nt Resources/MoAir.icns ]; then \
         rm -rf Resources/MoAir.iconset; \
         mkdir -p Resources/MoAir.iconset; \
@@ -99,7 +99,7 @@ _bundle-signed: (_assemble app_dir)
     @echo "built {{app_dir}}"
 
 # release compile -> unsigned "MoAir Dev.app" (<id>.dev, ad-hoc) in ~/Builds/moair/dev/<describe>; refreshes _latest
-[group: 'app']
+[group('main')]
 build:
     #!/usr/bin/env bash
     set -euo pipefail
@@ -119,7 +119,7 @@ build:
 
 # release compile + assemble an unsigned .app at DEST (build and _bundle-signed sign it)
 [private]
-_assemble DEST: icon
+_assemble DEST: tool-icon
     swift build -c release
     @rm -rf "{{DEST}}"
     @mkdir -p "{{DEST}}/Contents/MacOS" "{{DEST}}/Contents/Resources"
@@ -135,7 +135,7 @@ _assemble DEST: icon
         fi
 
 # build + stop + launch the dev copy from ~/Builds/_latest
-[group: 'app']
+[group('main')]
 run: build _stop
     open "{{dev_app}}"
     @sleep 1; echo "launched (pid: $(pgrep -f '{{dev_app}}' || echo ?))"
@@ -143,14 +143,14 @@ run: build _stop
 # --- diag ---
 
 # list audio output devices with name + transport (helps debug detection)
-[group: 'diag']
-devices:
+[group('tool')]
+tool-devices:
     @system_profiler SPAudioDataType -json 2>/dev/null \
         | jq -r '.SPAudioDataType[0]._items[] | select(.coreaudio_device_output) | "\(._name) | transport=\(.coreaudio_device_transport // "?") | manufacturer=\(.coreaudio_device_manufacturer // "?")"'
 
 # show running MoAir + default audio output
-[group: 'diag']
-status:
+[group('tool')]
+tool-status:
     @echo "Processes:"
     @pgrep -lf MoAir || echo "  (none)"
     @echo ""
@@ -158,49 +158,49 @@ status:
     @system_profiler SPAudioDataType 2>/dev/null | awk '/Default Output Device: Yes/{found=1} found{print; if(/^$/){exit}}' | head -8 || true
 
 # tail MoAir's own log output
-[group: 'diag']
-logs:
+[group('tool')]
+tool-logs:
     log stream --style compact --process MoAir
 
 # tail bluetoothd codec lines
-[group: 'diag']
-log-codec:
+[group('tool')]
+tool-log-codec:
     log stream --style compact --predicate 'subsystem == "com.apple.bluetooth" AND eventMessage CONTAINS "Codec"' --info
 
 # reset Motion + Bluetooth TCC grants
-[group: 'diag']
-reset-tcc:
+[group('tool')]
+tool-reset-tcc:
     -tccutil reset Motion {{bundle_id}}
     -tccutil reset Bluetooth {{bundle_id}}
     @echo "reset Motion + Bluetooth TCC for {{bundle_id}}"
 
 # send two test /orientation packets (needs liblo)
-[group: 'diag']
-osc-test host="127.0.0.1" port="7000":
+[group('tool')]
+tool-osc-test host="127.0.0.1" port="7000":
     oscsend {{host}} {{port}} /orientation fff 0.0 0.0 0.0
     oscsend {{host}} {{port}} /orientation fff 45.0 10.0 -5.0
     @echo "sent two /orientation packets to {{host}}:{{port}}"
 
 # dump every OSC packet on PORT (needs liblo)
-[group: 'diag']
-oscdump port="7000":
+[group('tool')]
+tool-oscdump port="7000":
     oscdump {{port}}
 
 # tcpdump UDP on lo0:PORT (sudo)
-[group: 'diag']
-udpdump port="7000":
+[group('tool')]
+tool-udpdump port="7000":
     sudo tcpdump -i lo0 -A "udp port {{port}}"
 
 # --- release ---
 
 # signed bundle, then the shop's ship step (_release-dmg, macos-package.sh) -> ~/Builds/moair/releases/v<version>/MoAir-<version>.dmg
-[group: 'release']
+[group('main')]
 release: _bundle-signed
     just -f "{{justfile()}}" _release-dmg "{{app_dir}}" --presigned
 
 # per-release asset download counts (needs `gh` CLI, public repo or auth)
-[group: 'release']
-downloads:
+[group('tool')]
+tool-downloads:
     @slug=$(git remote get-url origin 2>/dev/null | sed -E 's#.*github\.com[:/]([^/]+/[^/]+)(\.git)?$#\1#; s/\.git$//') ; \
         case "$slug" in */*) ;; *) echo "no GitHub remote configured (git remote add origin ...)" >&2 ; exit 1 ;; esac ; \
         { printf "tag\tasset\tdownloads\n" ; \
