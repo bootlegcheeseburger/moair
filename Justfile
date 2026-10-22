@@ -93,9 +93,9 @@ icon:
         echo "regenerated Sources/MoAir/Resources/moai-grid.png + @2x"; \
     fi
 
-# release compile -> wrap in signed MoAir.app
-[group: 'app']
-bundle: (_assemble app_dir)
+# release compile -> wrap in signed MoAir.app (install and release use it)
+[private]
+_bundle-signed: (_assemble app_dir)
     @codesign --force --deep --timestamp \
         --entitlements Resources/MoAir.entitlements \
         --options runtime \
@@ -105,7 +105,7 @@ bundle: (_assemble app_dir)
 
 # release compile -> unsigned "MoAir Dev.app" (<id>.dev, ad-hoc) in ~/Builds/moair/dev/<describe>; refreshes _latest
 [group: 'app']
-bundle-dev:
+bundle:
     #!/usr/bin/env bash
     set -euo pipefail
     builds="$HOME/Code/blc/scripts/builds.sh"
@@ -122,7 +122,7 @@ bundle-dev:
     "$builds" latest {{app_name}} "$app"
     "$builds" prune --apply {{app_name}} | grep -v 'outside the layout' || true
 
-# release compile + assemble an unsigned .app at DEST (bundle and bundle-dev sign it)
+# release compile + assemble an unsigned .app at DEST (bundle and _bundle-signed sign it)
 [private]
 _assemble DEST: icon
     swift build -c release
@@ -139,15 +139,15 @@ _assemble DEST: icon
             cp -R "$res_bundle" "{{DEST}}/Contents/Resources/" ; \
         fi
 
-# bundle-dev + launch the dev copy from ~/Builds/_latest
+# bundle + launch the dev copy from ~/Builds/_latest
 [group: 'app']
-relaunch: kill-app bundle-dev
+relaunch: kill-app bundle
     open "{{dev_app}}"
     @sleep 1; echo "launched (pid: $(pgrep -f '{{dev_app}}' || echo ?))"
 
-# bundle + copy to /Applications
+# signed bundle + copy to /Applications
 [group: 'app']
-install: bundle
+install: _bundle-signed
     @rm -rf {{installed_app}}
     @cp -R {{app_dir}} /Applications/
     @echo "installed {{installed_app}}"
@@ -211,9 +211,9 @@ udpdump port="7000":
 
 # --- release ---
 
-# bundle (signed), then the shop's ship step (release-dmg, macos-package.sh) -> ~/Builds/moair/releases/v<version>/MoAir-<version>.dmg
+# signed bundle, then the shop's ship step (release-dmg, macos-package.sh) -> ~/Builds/moair/releases/v<version>/MoAir-<version>.dmg
 [group: 'release']
-release: bundle (release-dmg app_dir "--presigned")
+release: _bundle-signed (release-dmg app_dir "--presigned")
 
 # per-release asset download counts (needs `gh` CLI, public repo or auth)
 [group: 'release']

@@ -30,8 +30,8 @@ just relaunch   # iterate on the menubar app
 just fake       # synthesised motion + fake device, no hardware needed
 ```
 
-`just relaunch` builds `just bundle-dev`: an ad-hoc signed "MoAir Dev.app" (bundle id `<id>.dev`) in `~/Builds/_latest/`, no Developer ID needed.
-`just bundle`, `install` and `release` sign with the Justfile's `signing_identity` (blc's `macos-sign.sh identity`); set `APP_SIGN_IDENTITY=-` to sign those ad-hoc if you don't have a Developer ID.
+`just relaunch` builds `just bundle`: an ad-hoc signed "MoAir Dev.app" (bundle id `<id>.dev`) in `~/Builds/_latest/`, no Developer ID needed.
+`just install` and `just release` sign with the Justfile's `signing_identity` (blc's `macos-sign.sh identity`); set `APP_SIGN_IDENTITY=-` to sign those ad-hoc if you don't have a Developer ID.
 
 ## Code style
 
