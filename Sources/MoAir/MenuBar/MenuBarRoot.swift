@@ -84,6 +84,7 @@ private struct BannerFooterRow: View {
                 }
             }
             Spacer()
+            MoreMenu()
             // Hide Options until EULA accepted so the user can't bypass
             // the gate by switching to Settings.
             if coord.settings.eulaAccepted {
@@ -95,6 +96,37 @@ private struct BannerFooterRow: View {
                 NSApp.terminate(nil)
             }
         }
+    }
+}
+
+/// The footer's overflow menu: "About MoAir" (the standard About panel) and
+/// the Contact submenu, one item per catalog contact kind (labels from the
+/// bundled contact.json). Shown before the EULA too: neither item reaches
+/// past the gate.
+private struct MoreMenu: View {
+    private let contact = ContactTemplates.bundled
+
+    var body: some View {
+        Menu {
+            Button("About \(Branding.displayName)") {
+                AboutPanel.show()
+            }
+            if let contact, !contact.kinds.isEmpty {
+                Menu("Contact") {
+                    ForEach(contact.kinds) { kind in
+                        Button(kind.label) {
+                            contact.open(kind.kind)
+                        }
+                    }
+                }
+            }
+        } label: {
+            Image(systemName: "ellipsis.circle")
+        }
+        .menuStyle(.borderlessButton)
+        .menuIndicator(.hidden)
+        .fixedSize()
+        .help("About and contact")
     }
 }
 

@@ -17,8 +17,14 @@ sync = [ { file = "Sources/MoAir/Settings/Branding.swift", pattern = 'hardcodedV
 # The app embeds no framework, font or third-party image: the SwiftPM graph of the
 # MoAir product is the whole list.
 app = "MoAir"
-# Not the standard About panel: MoAir is a menu bar app (LSUIElement) with no
-# About item, so no Credits.rtf. The ship step puts THIRD-PARTY-NOTICES.txt at the
-# DMG root.
-about = "not shown in the app yet (menu bar app, no About item)"
+# The status menu's "About MoAir" opens the standard About panel, which shows
+# Contents/Resources/Credits.rtf. The ship step also puts THIRD-PARTY-NOTICES.txt
+# at the DMG root.
 swift = { product = "MoAir" }
+
+[catalog]
+# The store's contact templates (blc docs/deps.md, The store catalog in CI), copied
+# by `just tool-catalog-sync`. Bundled as Contents/Resources/contact.json for the
+# status menu's Contact submenu and the About panel.
+slug = "moair"
+contact = "gen/contact.json"

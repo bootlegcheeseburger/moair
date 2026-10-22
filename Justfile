@@ -117,7 +117,7 @@ build:
     "$builds" latest {{app_name}} "$app"
     "$builds" prune --apply {{app_name}} | grep -v 'outside the layout' || true
 
-# release compile + assemble an unsigned .app at DEST, third-party notices in its Resources (build and _bundle-signed sign it)
+# release compile + assemble an unsigned .app at DEST, third-party notices, Credits.rtf and contact.json in its Resources (build and _bundle-signed sign it)
 [private]
 _assemble DEST: tool-icon && (_notices DEST + "/Contents/Resources")
     swift build -c release
@@ -129,6 +129,8 @@ _assemble DEST: tool-icon && (_notices DEST + "/Contents/Resources")
     @cp Resources/MoAir.entitlements "{{DEST}}/Contents/Resources/MoAir.entitlements"
     @cp Resources/MoAir.icns "{{DEST}}/Contents/Resources/MoAir.icns"
     @cp Sources/MoAir/Resources/blc.png "{{DEST}}/Contents/Resources/blc.png"
+    @# store contact templates (blc.toml [catalog] contact): status menu Contact + About
+    @cp gen/contact.json "{{DEST}}/Contents/Resources/contact.json"
     @res_bundle=".build/{{arch}}-apple-macosx/release/MoAir_MoAir.bundle" ; \
         if [ -d "$res_bundle" ]; then \
             cp -R "$res_bundle" "{{DEST}}/Contents/Resources/" ; \

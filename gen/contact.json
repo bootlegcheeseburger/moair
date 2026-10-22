@@ -1,0 +1,26 @@
+{
+  "app": "moair",
+  "kinds": [
+    {
+      "kind": "bug",
+      "label": "Report a Bug...",
+      "to": "support@bootlegcheeseburger.com",
+      "subject": "[{app} {version}] Bug: something is not working",
+      "body": "Hello,\n\nI found a problem in {app}.\n\nWhat I did:\n\n\nWhat happened:\n\n\nWhat I expected:\n\n\nApp: {app}\nVersion: {version}\nBuild: {build}\nmacOS: {macos}\n"
+    },
+    {
+      "kind": "feature",
+      "label": "Request a Feature...",
+      "to": "support@bootlegcheeseburger.com",
+      "subject": "[{app} {version}] Feature: an idea",
+      "body": "Hello,\n\nI have an idea for {app}.\n\n\n\nApp: {app}\nVersion: {version}\n"
+    },
+    {
+      "kind": "security",
+      "label": "Report a Security Issue...",
+      "to": "security@bootlegcheeseburger.com",
+      "subject": "[{app} {version}] Security: a report",
+      "body": "Hello,\n\nI would like to report a security issue in {app}.\n\nWhat I found:\n\n\nHow to reproduce it:\n\n\nApp: {app}\nVersion: {version}\nBuild: {build}\nmacOS: {macos}\n"
+    }
+  ]
+}
