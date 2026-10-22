@@ -16,6 +16,7 @@ debug_bin     := ".build/" + arch + "-apple-macosx/debug/MoAir"
 release_bin   := ".build/" + arch + "-apple-macosx/release/MoAir"
 app_dir       := ".build/" + app_name + ".app"
 installed_app := "/Applications/" + app_name + ".app"
+dev_app       := home_directory() / "Builds/_latest" / app_name + " Dev.app"
 plist         := "Resources/Info.plist"
 
 # --- dev ---
@@ -42,12 +43,13 @@ clean:
 
 # --- app ---
 
-# stop any running MoAir (debug, .build/.app, or installed)
+# stop any running MoAir (debug, .build/.app, dev, or installed)
 [group: 'app']
 kill-app:
     -pkill -f '{{debug_bin}}' || true
     -pkill -f '{{app_dir}}' || true
     -pkill -f '{{installed_app}}' || true
+    -pkill -f '{{dev_app}}' || true
 
 # regenerate MoAir.icns + menubar PNGs from design TIFFs (idempotent)
 [group: 'app']
@@ -93,20 +95,7 @@ icon:
 
 # release compile -> wrap in signed MoAir.app
 [group: 'app']
-bundle: icon
-    swift build -c release
-    @rm -rf {{app_dir}}
-    @mkdir -p {{app_dir}}/Contents/MacOS {{app_dir}}/Contents/Resources
-    @cp {{release_bin}} {{app_dir}}/Contents/MacOS/{{app_name}}
-    @cp Resources/Info.plist {{app_dir}}/Contents/Info.plist
-    @python3 -I ~/Code/blc/scripts/release.py stamp {{app_dir}}/Contents/Info.plist >/dev/null
-    @cp Resources/MoAir.entitlements {{app_dir}}/Contents/Resources/MoAir.entitlements
-    @cp Resources/MoAir.icns {{app_dir}}/Contents/Resources/MoAir.icns
-    @cp Sources/MoAir/Resources/blc.png {{app_dir}}/Contents/Resources/blc.png
-    @res_bundle=".build/{{arch}}-apple-macosx/release/MoAir_MoAir.bundle" ; \
-        if [ -d "$res_bundle" ]; then \
-            cp -R "$res_bundle" {{app_dir}}/Contents/Resources/ ; \
-        fi
+bundle: (_assemble app_dir)
     @codesign --force --deep --timestamp \
         --entitlements Resources/MoAir.entitlements \
         --options runtime \
@@ -114,11 +103,47 @@ bundle: icon
         {{app_dir}}
     @echo "built {{app_dir}}"
 
-# bundle + launch from .build
+# release compile -> unsigned "MoAir Dev.app" (<id>.dev, ad-hoc) in ~/Builds/moair/dev/<describe>; refreshes _latest
 [group: 'app']
-relaunch: kill-app bundle
-    open {{app_dir}}
-    @sleep 1; echo "launched (pid: $(pgrep -f {{app_dir}} || echo ?))"
+bundle-dev:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    builds="$HOME/Code/blc/scripts/builds.sh"
+    out="$("$builds" dir {{app_name}} dev)"
+    app="$out/{{app_name}} Dev.app"
+    just -f "{{justfile()}}" _assemble "$app"
+    info="$app/Contents/Info.plist"
+    id="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleIdentifier' "$info")"
+    plutil -replace CFBundleIdentifier -string "$id.dev" "$info"
+    plutil -replace CFBundleName -string "{{app_name}} Dev" "$info"
+    plutil -replace CFBundleDisplayName -string "{{app_name}} Dev" "$info"
+    codesign --force --deep --sign - --entitlements Resources/MoAir.entitlements "$app"
+    echo "built $app"
+    "$builds" latest {{app_name}} "$app"
+    "$builds" prune --apply {{app_name}} | grep -v 'outside the layout' || true
+
+# release compile + assemble an unsigned .app at DEST (bundle and bundle-dev sign it)
+[private]
+_assemble DEST: icon
+    swift build -c release
+    @rm -rf "{{DEST}}"
+    @mkdir -p "{{DEST}}/Contents/MacOS" "{{DEST}}/Contents/Resources"
+    @cp {{release_bin}} "{{DEST}}/Contents/MacOS/{{app_name}}"
+    @cp Resources/Info.plist "{{DEST}}/Contents/Info.plist"
+    @python3 -I ~/Code/blc/scripts/release.py stamp "{{DEST}}/Contents/Info.plist" >/dev/null
+    @cp Resources/MoAir.entitlements "{{DEST}}/Contents/Resources/MoAir.entitlements"
+    @cp Resources/MoAir.icns "{{DEST}}/Contents/Resources/MoAir.icns"
+    @cp Sources/MoAir/Resources/blc.png "{{DEST}}/Contents/Resources/blc.png"
+    @res_bundle=".build/{{arch}}-apple-macosx/release/MoAir_MoAir.bundle" ; \
+        if [ -d "$res_bundle" ]; then \
+            cp -R "$res_bundle" "{{DEST}}/Contents/Resources/" ; \
+        fi
+
+# bundle-dev + launch the dev copy from ~/Builds/_latest
+[group: 'app']
+relaunch: kill-app bundle-dev
+    open "{{dev_app}}"
+    @sleep 1; echo "launched (pid: $(pgrep -f '{{dev_app}}' || echo ?))"
 
 # bundle + copy to /Applications
 [group: 'app']
