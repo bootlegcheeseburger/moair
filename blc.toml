@@ -17,4 +17,8 @@ sync = [ { file = "Sources/MoAir/Settings/Branding.swift", pattern = 'hardcodedV
 # The app embeds no framework, font or third-party image: the SwiftPM graph of the
 # MoAir product is the whole list.
 app = "MoAir"
+# Not the standard About panel: MoAir is a menu bar app (LSUIElement) with no
+# About item, so no Credits.rtf. The ship step puts THIRD-PARTY-NOTICES.txt at the
+# DMG root.
+about = "not shown in the app yet (menu bar app, no About item)"
 swift = { product = "MoAir" }
