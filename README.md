@@ -43,7 +43,7 @@ Local-only. No telemetry. The only network traffic is OSC to your configured hos
 ## Hack on it
 
 ```
-brew install just && just relaunch
+brew install just && just run
 ```
 
 ## Support

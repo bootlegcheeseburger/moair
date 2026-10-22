@@ -6,7 +6,7 @@ set shell := ["bash", "-cu"]
 import? '~/Code/blc/just/core.just'
 import? '~/Code/blc/just/swift.just'
 import? '~/Code/blc/just/macos.just'
-# shared versioning: version, bump, cut, notes, publish (config: blc.toml [release])
+# shared versioning (config: blc.toml [release])
 import? '~/Code/blc/just/release.just'
 
 app_name      := "MoAir"
@@ -21,19 +21,14 @@ plist         := "Resources/Info.plist"
 
 # --- dev ---
 
-# debug build
-[group: 'dev']
-build:
+# debug compile (fake runs the bare binary)
+[private]
+_compile:
     swift build
-
-# run debug binary (no menubar — use `relaunch` for that)
-[group: 'dev']
-run: build
-    {{debug_bin}}
 
 # run with synthesised motion + fake device
 [group: 'dev']
-fake: build
+fake: _compile
     MOAIR_FAKE=1 {{debug_bin}}
 
 # rm -rf .build
@@ -45,7 +40,7 @@ clean:
 
 # stop any running MoAir (debug, .build/.app, dev, or installed)
 [group: 'app']
-kill-app:
+stop:
     -pkill -f '{{debug_bin}}' || true
     -pkill -f '{{app_dir}}' || true
     -pkill -f '{{installed_app}}' || true
@@ -93,7 +88,7 @@ icon:
         echo "regenerated Sources/MoAir/Resources/moai-grid.png + @2x"; \
     fi
 
-# release compile -> wrap in signed MoAir.app (install and release use it)
+# release compile -> wrap in signed MoAir.app (release uses it)
 [private]
 _bundle-signed: (_assemble app_dir)
     @codesign --force --deep --timestamp \
@@ -105,7 +100,7 @@ _bundle-signed: (_assemble app_dir)
 
 # release compile -> unsigned "MoAir Dev.app" (<id>.dev, ad-hoc) in ~/Builds/moair/dev/<describe>; refreshes _latest
 [group: 'app']
-bundle:
+build:
     #!/usr/bin/env bash
     set -euo pipefail
     builds="$HOME/Code/blc/scripts/builds.sh"
@@ -122,7 +117,7 @@ bundle:
     "$builds" latest {{app_name}} "$app"
     "$builds" prune --apply {{app_name}} | grep -v 'outside the layout' || true
 
-# release compile + assemble an unsigned .app at DEST (bundle and _bundle-signed sign it)
+# release compile + assemble an unsigned .app at DEST (build and _bundle-signed sign it)
 [private]
 _assemble DEST: icon
     swift build -c release
@@ -139,24 +134,11 @@ _assemble DEST: icon
             cp -R "$res_bundle" "{{DEST}}/Contents/Resources/" ; \
         fi
 
-# bundle + launch the dev copy from ~/Builds/_latest
+# build + stop + launch the dev copy from ~/Builds/_latest
 [group: 'app']
-relaunch: kill-app bundle
+run: build stop
     open "{{dev_app}}"
     @sleep 1; echo "launched (pid: $(pgrep -f '{{dev_app}}' || echo ?))"
-
-# signed bundle + copy to /Applications
-[group: 'app']
-install: _bundle-signed
-    @rm -rf {{installed_app}}
-    @cp -R {{app_dir}} /Applications/
-    @echo "installed {{installed_app}}"
-
-# reinstall + launch from /Applications (preserves TCC grants)
-[group: 'app']
-relaunch-installed: kill-app install
-    open {{installed_app}}
-    @sleep 1; echo "launched (pid: $(pgrep -f {{installed_app}} || echo ?))"
 
 # --- diag ---
 
@@ -211,9 +193,10 @@ udpdump port="7000":
 
 # --- release ---
 
-# signed bundle, then the shop's ship step (release-dmg, macos-package.sh) -> ~/Builds/moair/releases/v<version>/MoAir-<version>.dmg
+# signed bundle, then the shop's ship step (_release-dmg, macos-package.sh) -> ~/Builds/moair/releases/v<version>/MoAir-<version>.dmg
 [group: 'release']
-release: _bundle-signed (release-dmg app_dir "--presigned")
+release: _bundle-signed
+    just -f "{{justfile()}}" _release-dmg "{{app_dir}}" --presigned
 
 # per-release asset download counts (needs `gh` CLI, public repo or auth)
 [group: 'release']
@@ -227,9 +210,3 @@ downloads:
         total=$(gh api "repos/$slug/releases" --paginate --jq '[.[].assets[].download_count] | add // 0') ; \
         echo "----" ; \
         echo "total: $total"
-
-# push main + tags
-[group: 'release']
-push:
-    git push origin main
-    git push --tags
