@@ -11,3 +11,10 @@ github = "bootlegcheeseburger/moair"
 assets = ["*.dmg", "*.dmg.sha256"]
 # The Swift fallback that spells the version when the bundle has none.
 sync = [ { file = "Sources/MoAir/Settings/Branding.swift", pattern = 'hardcodedVersion = "([^"]*)"' } ]
+
+[notices]
+# Third-party notices for the bundle (blc docs/builds.md, Third-party notices).
+# The app embeds no framework, font or third-party image: the SwiftPM graph of the
+# MoAir product is the whole list.
+app = "MoAir"
+swift = { product = "MoAir" }
