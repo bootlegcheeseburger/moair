@@ -39,8 +39,8 @@ clean:
 # --- app ---
 
 # stop any running MoAir (debug, .build/.app, dev, or installed)
-[group: 'app']
-stop:
+[private]
+_stop:
     -pkill -f '{{debug_bin}}' || true
     -pkill -f '{{app_dir}}' || true
     -pkill -f '{{installed_app}}' || true
@@ -136,7 +136,7 @@ _assemble DEST: icon
 
 # build + stop + launch the dev copy from ~/Builds/_latest
 [group: 'app']
-run: build stop
+run: build _stop
     open "{{dev_app}}"
     @sleep 1; echo "launched (pid: $(pgrep -f '{{dev_app}}' || echo ?))"
 
