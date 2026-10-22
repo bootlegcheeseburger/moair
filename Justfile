@@ -117,9 +117,9 @@ build:
     "$builds" latest {{app_name}} "$app"
     "$builds" prune --apply {{app_name}} | grep -v 'outside the layout' || true
 
-# release compile + assemble an unsigned .app at DEST (build and _bundle-signed sign it)
+# release compile + assemble an unsigned .app at DEST, third-party notices in its Resources (build and _bundle-signed sign it)
 [private]
-_assemble DEST: tool-icon
+_assemble DEST: tool-icon && (_notices DEST + "/Contents/Resources")
     swift build -c release
     @rm -rf "{{DEST}}"
     @mkdir -p "{{DEST}}/Contents/MacOS" "{{DEST}}/Contents/Resources"
