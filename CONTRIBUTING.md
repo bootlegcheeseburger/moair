@@ -10,7 +10,7 @@ Open an [issue](../../issues) with:
 - Headphone model + firmware version (Settings → Accessibility → AirPods)
 - MoAir version (Options panel)
 - What you did, what you expected, what happened
-- Relevant log output: `just logs` (run before reproducing)
+- Relevant log output: `just tool-logs` (run before reproducing)
 
 ## Pull requests
 
@@ -27,7 +27,7 @@ For non-trivial changes, open an issue first to discuss scope.
 ```bash
 just            # list recipes
 just run        # build, stop, launch the dev menubar app
-just fake       # synthesised motion + fake device, no hardware needed
+just tool-fake  # synthesised motion + fake device, no hardware needed
 ```
 
 `just run` builds `just build`: an ad-hoc signed "MoAir Dev.app" (bundle id `<id>.dev`) in `~/Builds/_latest/`, no Developer ID needed.

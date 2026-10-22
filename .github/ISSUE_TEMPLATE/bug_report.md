@@ -20,7 +20,7 @@ labels: bug
 - MoAir version (Options panel):
 
 **Logs**
-Run `just logs` in a terminal, reproduce, and paste relevant output here.
+Run `just tool-logs` in a terminal, reproduce, and paste relevant output here.
 
 ```
 ```
