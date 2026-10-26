@@ -2,9 +2,9 @@ import Foundation
 import OSCKit
 
 // Nx head-tracker OSC schema. Used by:
-//   - ASAF Panner (reverse-engineered from ASAF AAX v2.1.12;
-//     /nxosc/quaternion is the panner binary's sole external tracker
-//     method, with user-configurable host/port).
+//   - ASAF Panner (observed on the wire: the panner accepts
+//     /nxosc/quaternion from an external tracker, at the host/port set
+//     in its OSC settings).
 //   - Native Nx receivers (Nx Virtual Mix Room, Nx Ocean Way, etc).
 //
 // Wire format: 4 floats in (x, y, z, w) order. NOT the native
