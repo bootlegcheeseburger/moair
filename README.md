@@ -54,4 +54,4 @@ If MoAir earned its keep, you can [buy me a cheeseburger](https://www.buymeacoff
 
 [MIT](LICENSE) © 2026 Bootleg Cheeseburger, LLC
 
-Product and company names are trademarks of their respective owners; their mention does not imply affiliation or endorsement. Apple, macOS and AirPods are trademarks of Apple Inc., registered in the U.S. and other countries.
+Apple, macOS and AirPods are trademarks of Apple Inc., registered in the U.S. and other countries. Other product and company names are trademarks of their respective owners; their mention does not imply affiliation or endorsement.
