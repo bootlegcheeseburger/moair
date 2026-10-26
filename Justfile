@@ -3,11 +3,11 @@
 set shell := ["bash", "-cu"]
 
 # shared signing recipes + signing_identity / notary_profile vars
-import? '~/Code/blc/just/core.just'
-import? '~/Code/blc/just/swift.just'
-import? '~/Code/blc/just/macos.just'
+import? '~/Code/blc-ops/just/core.just'
+import? '~/Code/blc-ops/just/swift.just'
+import? '~/Code/blc-ops/just/macos.just'
 # shared versioning (config: blc.toml [release])
-import? '~/Code/blc/just/release.just'
+import? '~/Code/blc-ops/just/release.just'
 
 app_name      := "MoAir"
 bundle_id     := "com.bootlegcheeseburger.moair"
@@ -103,7 +103,7 @@ _bundle-signed: (_assemble app_dir)
 build:
     #!/usr/bin/env bash
     set -euo pipefail
-    builds="$HOME/Code/blc/scripts/builds.sh"
+    builds="$HOME/Code/blc-ops/scripts/builds.sh"
     out="$("$builds" dir {{app_name}} dev)"
     app="$out/{{app_name}} Dev.app"
     just -f "{{justfile()}}" _assemble "$app"
@@ -125,7 +125,7 @@ _assemble DEST: tool-icon && (_notices DEST + "/Contents/Resources")
     @mkdir -p "{{DEST}}/Contents/MacOS" "{{DEST}}/Contents/Resources"
     @cp {{release_bin}} "{{DEST}}/Contents/MacOS/{{app_name}}"
     @cp Resources/Info.plist "{{DEST}}/Contents/Info.plist"
-    @python3 -I ~/Code/blc/scripts/release.py stamp "{{DEST}}/Contents/Info.plist" >/dev/null
+    @python3 -I ~/Code/blc-ops/scripts/release.py stamp "{{DEST}}/Contents/Info.plist" >/dev/null
     @cp Resources/MoAir.entitlements "{{DEST}}/Contents/Resources/MoAir.entitlements"
     @cp Resources/MoAir.icns "{{DEST}}/Contents/Resources/MoAir.icns"
     @cp Sources/MoAir/Resources/blc.png "{{DEST}}/Contents/Resources/blc.png"
