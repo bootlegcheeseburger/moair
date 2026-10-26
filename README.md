@@ -4,7 +4,7 @@
 
 # MoAir
 
-> Your headphones, but pro. macOS menubar utility: head tracking → spatial-audio OSC, plus professional, dB-accurate calibration.
+> Your headphones, but pro. macOS® menubar utility: head tracking → spatial-audio OSC, plus professional, dB-accurate calibration.
 
 <p align="center">
   <img src="design/screencap.png" width="360" alt="MoAir menubar panel">
@@ -23,7 +23,7 @@
 2. Drag MoAir into `/Applications`.
 3. First launch grants Motion + Bluetooth.
 
-Works with AirPods (3rd gen), AirPods Pro, AirPods 4 (ANC), AirPods Max and Beats Fit Pro; macOS 14+. USB-C wired tracking needs macOS 15.4+ and the 2024 USB-C AirPods Max (firmware 7E101+).
+Works with AirPods® (3rd gen), AirPods Pro, AirPods 4 (ANC) and AirPods Max headphones and Beats Fit Pro earbuds; macOS 14+. USB-C wired tracking needs macOS 15.4+ and the 2024 USB-C AirPods Max (firmware 7E101+).
 
 ## OSC
 
@@ -54,4 +54,4 @@ If MoAir earned its keep, you can [buy me a cheeseburger](https://www.buymeacoff
 
 [MIT](LICENSE) © 2026 Bootleg Cheeseburger, LLC
 
-Product and company names are trademarks of their respective owners; their mention does not imply affiliation or endorsement.
+Product and company names are trademarks of their respective owners; their mention does not imply affiliation or endorsement. Apple, macOS and AirPods are trademarks of Apple Inc., registered in the U.S. and other countries.
