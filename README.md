@@ -4,7 +4,7 @@
 
 # MoAir
 
-> Tim just wants to use his headphones! macOS menubar utility: AirPods head tracking → spatial-audio OSC, plus professional, dB-accurate calibration.
+> Your headphones, but pro. macOS menubar utility: head tracking → spatial-audio OSC, plus professional, dB-accurate calibration.
 
 <p align="center">
   <img src="design/screencap.png" width="360" alt="MoAir menubar panel">
@@ -12,18 +12,18 @@
 
 ## Features
 
-- Head tracking → OSC for **DAR**, **Apple ASAF**, **Nx**, **Mach1**, **Virtuoso** (or custom).
+- Head tracking → OSC, with presets for common spatial-audio renderers (or custom).
 - Live volume in calibrated dB.
 - Connection, Codec, latency, battery, tracking stats at a glance.
 - Fine tune head tracking with dead spots and sensitivity.
 
 ## Install
 
-1. Download the latest [DMG](../../releases).
+1. Download the latest [DMG](https://github.com/bootlegcheeseburger/moair/releases).
 2. Drag MoAir into `/Applications`.
 3. First launch grants Motion + Bluetooth.
 
-Requires macOS 14+. USB-C wired tracking needs macOS 15.4+ and 2024 USB-C AirPods Max (firmware 7E101+).
+Works with AirPods (3rd gen), AirPods Pro, AirPods 4 (ANC), AirPods Max and Beats Fit Pro; macOS 14+. USB-C wired tracking needs macOS 15.4+ and the 2024 USB-C AirPods Max (firmware 7E101+).
 
 ## OSC
 
@@ -55,3 +55,5 @@ If MoAir earned its keep, you can [buy me a cheeseburger](https://www.buymeacoff
 ## License
 
 [MIT](LICENSE) © 2026 Bootleg Cheeseburger, LLC
+
+Product and company names are trademarks of their respective owners; their mention does not imply affiliation or endorsement.
