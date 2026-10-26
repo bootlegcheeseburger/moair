@@ -48,9 +48,7 @@ brew install just && just run
 
 ## Support
 
-If MoAir earned its keep, you can [buy me a cheeseburger](https://www.buymeacoffee.com/bootlegcheeseburger) 🍔.
-
-<a href="https://www.buymeacoffee.com/bootlegcheeseburger"><img src="https://img.buymeacoffee.com/button-api/?text=Buy%20me%20a%20cheeseburger&emoji=%F0%9F%8D%94&slug=bootlegcheeseburger&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" alt="Buy me a cheeseburger"></a>
+If MoAir earned its keep, you can [buy me a cheeseburger](https://www.buymeacoffee.com/bootlegcheeseburger).
 
 ## License
 
