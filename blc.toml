@@ -1,5 +1,5 @@
-# Shop conventions for this repo. Checked by `just -f ~/Code/blc/justfile deps`
-# (and doctor). Tiers: shipped | tool | sandbox (see ~/Code/blc/README.md).
+# Shop conventions for this repo. Checked by `just -f ~/Code/blc-ops/justfile deps`
+# (and doctor). Tiers: shipped | tool | sandbox (see ~/Code/blc-ops/README.md).
 
 [deps]
 tier = "shipped"
