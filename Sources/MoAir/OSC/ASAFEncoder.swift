@@ -3,8 +3,8 @@ import OSCKit
 
 // ASAF Panner native head-tracker input.
 //
-// Address: /HeadPose (per the plugin UI; the binary literal is /HeadPos
-// without an 'e' but the panner accepts /HeadPose).
+// Address: /HeadPose (per the plugin UI; observed on the wire, the panner
+// accepts it).
 // Host + port: user-configurable via the plugin's "OSC Head Tracker
 // Address" / "Port Number" fields. MoAir's asafPreset suggests 8000.
 //
