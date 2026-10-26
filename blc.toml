@@ -21,6 +21,10 @@ app = "MoAir"
 # Contents/Resources/Credits.rtf. The ship step also puts THIRD-PARTY-NOTICES.txt
 # at the DMG root.
 swift = { product = "MoAir" }
+# The shop's own files in Contents/Resources: the moai sprite sheet and menu icons
+# (drawn by the shop, 2026-10-26 user), the shop logo, the entitlements and the
+# store's contact copy.
+own_resources = ["MoAir_MoAir.bundle", "blc.png", "contact.json", "MoAir.entitlements"]
 
 [catalog]
 # The store's contact templates (blc docs/deps.md, The store catalog in CI), copied
