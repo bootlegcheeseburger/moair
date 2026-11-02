@@ -85,7 +85,7 @@ fi
 say "$APP_NAME $VERSION-$BUILD_NUMBER, $BUNDLE_ID -> $APP"
 # --disable-automatic-resolution refuses a Package.resolved that no longer matches
 # Package.swift, as cargo's --locked does.
-SWIFT=(swift build -c release --product "$APP_NAME" --package-path "$ROOT" --disable-automatic-resolution)
+SWIFT=(swift build --disable-sandbox -c release --product "$APP_NAME" --package-path "$ROOT" --disable-automatic-resolution)
 $BUILD && run "${SWIFT[@]}"
 BIN="$("${SWIFT[@]}" --show-bin-path)"
 [ -x "$BIN/$APP_NAME" ] || $DRY || die "no $BIN/$APP_NAME (drop --no-build)"

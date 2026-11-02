@@ -5,7 +5,7 @@ import Foundation
 /// contact templates (`gen/contact.json`, a copy of the store's generated file,
 /// bundled by dev/app-bundle.sh as `Contents/Resources/contact.json`).
 ///
-/// Mirrors blc-shop's `blc-contact` crate (1a971c3):
+/// Mirrors the shop's shared contact-template rules:
 /// - `{app}` `{version}` `{build}` `{macos}` `{serial_last4}` are filled in
 ///   one pass; any placeholder without a value becomes a blank, never a
 ///   literal `{x}`. MoAir has no serial, so `{serial_last4}` is always blank.

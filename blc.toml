@@ -1,5 +1,6 @@
 [repo]
 code = "moa"
+public = true
 
 [check]
-cmd = "swift build"
+cmd = "swift build --disable-sandbox"

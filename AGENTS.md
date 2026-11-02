@@ -8,7 +8,8 @@ open: this repository is public, so nothing in it names a private shop repositor
 
 - One SwiftPM executable target, `Sources/MoAir`, with OSCKit as its one direct dependency.
   `Package.resolved` is committed.
-- Check: `swift build` (blc.toml `[check]`). There is no test target yet.
+- Check: `swift build --disable-sandbox` (blc.toml `[check]`; `blc jail` is the sandbox, and SwiftPM's own cannot start inside it). There is no test target yet.
+- Public repo (`[repo] public = true`): pre-push refuses private shop names and secrets.
 - `MOAIR_FAKE=1 swift run` runs the bare binary with a fake device and synthesised motion, no
   hardware needed. A bare binary has no bundle, so it shows version `0.0.0-dev`.
 - Logs: `log stream --style compact --process MoAir`. Permission prompts are reset with
