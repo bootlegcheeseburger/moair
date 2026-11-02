@@ -1,34 +1,5 @@
-# Shop conventions for this repo. Checked by `just -f ~/Code/blc-ops/justfile deps`
-# (and doctor). Tiers: shipped | tool | sandbox (see ~/Code/blc-ops/README.md).
+[repo]
+code = "moa"
 
-[deps]
-tier = "shipped"
-
-[release]
-app = "moair"
-version = "VERSION"
-github = "bootlegcheeseburger/moair"
-assets = ["*.dmg", "*.dmg.sha256"]
-# The Swift fallback that spells the version when the bundle has none.
-sync = [ { file = "Sources/MoAir/Settings/Branding.swift", pattern = 'hardcodedVersion = "([^"]*)"' } ]
-
-[notices]
-# Third-party notices for the bundle (blc docs/builds.md, Third-party notices).
-# The app embeds no framework, font or third-party image: the SwiftPM graph of the
-# MoAir product is the whole list.
-app = "MoAir"
-# The status menu's "About MoAir" opens the standard About panel, which shows
-# Contents/Resources/Credits.rtf. The ship step also puts THIRD-PARTY-NOTICES.txt
-# at the DMG root.
-swift = { product = "MoAir" }
-# The shop's own files in Contents/Resources: the moai sprite sheet and menu icons
-# (drawn by the shop, 2026-10-26 user), the shop logo, the entitlements and the
-# store's contact copy.
-own_resources = ["MoAir_MoAir.bundle", "blc.png", "contact.json", "MoAir.entitlements"]
-
-[catalog]
-# The store's contact templates (blc docs/deps.md, The store catalog in CI), copied
-# by `just tool-catalog-sync`. Bundled as Contents/Resources/contact.json for the
-# status menu's Contact submenu and the About panel.
-slug = "moair"
-contact = "gen/contact.json"
+[check]
+cmd = "swift build"

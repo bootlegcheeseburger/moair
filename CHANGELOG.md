@@ -1,5 +1,9 @@
 # Changelog
 
+Release notes for MoAir, one section per release: changes go under `## Unreleased` as they land, and `blc release` turns it into the release's section.
+
+## Unreleased
+
 ## v26.10.1 (2026-10-26)
 
 MoAir now carries its open-source credits and a way to reach us.

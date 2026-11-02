@@ -11,24 +11,16 @@ enum Branding {
 }
 
 enum AppInfo {
-    /// User-facing version. Bundle.main.infoDictionary has the plist value
-    /// only when MoAir runs from the .app wrapper — `swift run`, `swift
-    /// build` debug binaries, and most other SwiftPM-launch paths give us
-    /// no `CFBundleShortVersionString`. The hardcoded fallback below is
-    /// kept in lockstep with `Resources/Info.plist` by the Justfile's
-    /// `bump-major` / `bump-minor` recipes, so the Options screen never
-    /// displays "0.0.0" regardless of how MoAir was launched.
+    /// User-facing version, from the bundle's Info.plist, which
+    /// dev/app-bundle.sh stamps from VERSION. A bare SwiftPM binary
+    /// (`swift run`) has no bundle and shows "0.0.0-dev".
     static let version: String = {
         if let v = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
            !v.isEmpty {
             return v
         }
-        return hardcodedVersion
+        return "0.0.0-dev"
     }()
-
-    /// Bumped automatically by `just bump {major|minor|patch}`. Don't edit
-    /// by hand — keep equal to `CFBundleShortVersionString` in `Resources/Info.plist`.
-    static let hardcodedVersion = "26.10.1"
 }
 
 /// Safe loader for the branded icons used by the Options screen.

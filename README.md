@@ -43,8 +43,10 @@ Local-only. No telemetry. The only network traffic is OSC to your configured hos
 ## Hack on it
 
 ```
-brew install just && just run
+MOAIR_FAKE=1 swift run
 ```
+
+No AirPods needed: a fake device and synthesised motion. `CONTRIBUTING.md` has the rest.
 
 ## Support
 

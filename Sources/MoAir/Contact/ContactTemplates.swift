@@ -2,8 +2,8 @@ import AppKit
 import Foundation
 
 /// Pre-drafted contact emails as `mailto:` URLs, from the store catalog's
-/// contact templates (`gen/contact.json`, synced by `just tool-catalog-sync`
-/// and bundled as `Contents/Resources/contact.json`).
+/// contact templates (`gen/contact.json`, a copy of the store's generated file,
+/// bundled by dev/app-bundle.sh as `Contents/Resources/contact.json`).
 ///
 /// Mirrors blc-shop's `blc-contact` crate (1a971c3):
 /// - `{app}` `{version}` `{build}` `{macos}` `{serial_last4}` are filled in

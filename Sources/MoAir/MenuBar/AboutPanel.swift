@@ -2,7 +2,7 @@ import AppKit
 
 /// The standard macOS About panel. Its credits pane shows the contact lines
 /// (from the bundled contact.json, as mailto links) above the third-party
-/// notices in `Contents/Resources/Credits.rtf` (blc notices.py writes it).
+/// notices in `Contents/Resources/Credits.rtf` (dev/app-bundle.sh writes it).
 enum AboutPanel {
     static func show() {
         // MoAir is an accessory app: activate so the panel comes to the front.
